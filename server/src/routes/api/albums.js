@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const controllers = require('../controllers/albums.controller');
+const controllers = require('../controllers/albums.controllers');
 
 // List all albums
 router.get('/',controllers.allAlbums);

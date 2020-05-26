@@ -145,6 +145,7 @@ const likeAlbum = (req, res, next) => {
           res.send({result});
         }
       });
+    // 
   } catch (error) {
     next(error);
   }

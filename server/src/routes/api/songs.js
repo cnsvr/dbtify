@@ -12,6 +12,17 @@ router.get('/:album_id(\\d*)', controllers.songsOfAlbum );
 // get song of artist.
 router.get('/:artist_name',controllers.songsOfArtist);
 
+// get popular song of artist.
+
+router.get('/:artist_name/popular',controllers.popularSongOfArtist);
+
+// get songs of a specific genre.
+
+router.get('/genres/:genre',controllers.songsOfGenre);
+
+// get songs contain this keyword in their titles.
+
+router.get('/search/:keyword',controllers.searchSong);
 
 
 // add song into album of artist.
