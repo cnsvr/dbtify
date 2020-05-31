@@ -116,7 +116,7 @@ const deleteAlbum = (req, res, next) => {
         if (err) {
           // console.log(err);
           res.status(422);
-          next(new Error('Database Error'));
+          next(new Error(err.sqlMessage));
         } else {
           console.log("Number of records deleted: " + result.affectedRows);
           res.send({result});
@@ -132,19 +132,48 @@ const deleteAlbum = (req, res, next) => {
 };
 
 const likeAlbum = (req, res, next) => {
-  const { album_id : id} = req.params;
+  const { album_id : id } = req.params;
   try {
     const query = `UPDATE album SET number_of_likes = number_of_likes + 1 WHERE album_id =${id}`;
     db.query(query,(err,result) => {
       if (err) {
           // console.log(err);
           res.status(422);
-          next(new Error('Database Error'));
+          next(new Error(err.sqlMessage));
         } else {
           console.log("Number of records changed: " + result.affectedRows);
-          res.send({result});
+          // res.send({result});
         }
+        // If user like album , all songs of album go to liked_song
+        const getAllSong = `SELECT song_id FROM song where album_id =${id}`;
+        values = [];
+        db.query(getAllSong,(err,results) => {
+          if (err) {
+            // console.log(err);
+            res.status(422);
+            next(new Error('Database Error'));
+          } else {
+            results.forEach(result => {
+              values.push([
+                Number(result.song_id),
+                req.user.user
+              ]);
+            });
+          }
+          console.log(values);
+          const setLikedSongs = `INSERT INTO liked_song (song_id,username) VALUES ?`;
+          db.query(setLikedSongs,[values], (err,result) => {
+            if (err) {
+              // console.log(err);
+              res.status(422);
+              next(new Error(err));
+            } else {
+              res.send({result});
+            }
+          });
+        });
       });
+    // 
   } catch (error) {
     next(error);
   }

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const controllers = require('../controllers/albums.controller');
+const controllers = require('../controllers/albums.controllers');
 
 // List all albums
 router.get('/',controllers.allAlbums);
@@ -21,7 +21,7 @@ router.patch('/:album_id',controllers.likeAlbum);
 
 // delete album of artist
 
-router.delete('/artist_name/:id',controllers.deleteAlbum);
+router.delete('/:artist_name/:id',controllers.deleteAlbum);
 
 
 

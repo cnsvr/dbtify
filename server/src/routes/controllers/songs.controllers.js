@@ -133,7 +133,7 @@ const deleteSong = (req, res, next) => {
         if (err) {
           // console.log(err);
           res.status(422);
-          next(new Error('Database Error'));
+          next(new Error(err.sqlMessage));
         } else {
           console.log("Number of records deleted: " + result.affectedRows);
           res.send({result});
@@ -151,22 +151,107 @@ const deleteSong = (req, res, next) => {
 const likeSong = (req, res, next) => {
   const { song_id : id} = req.params;
   try {
-    const query = `UPDATE song SET number_of_likes = number_of_likes + 1 WHERE song_id =${id}`;
-    db.query(query,(err,result) => {
+    // If listener liked a song , no need to like again.
+    const checkLikedList = `SELECT * FROM liked_song WHERE song_id=${id} AND username='${req.user.user}'`;
+    db.query(checkLikedList,(err,result) => {
       if (err) {
-          // console.log(err);
+        // console.log(err);
+        res.status(422);
+        next(new Error(err.sqlMessage));
+      } else {
+        if (result.length == 0) {
+          const query = `UPDATE song SET number_of_likes = number_of_likes + 1 WHERE song_id =${id}`;
+          db.query(query,(err,result) => {
+            if (err) {
+                // console.log(err);
+                res.status(422);
+                next(new Error(err.sqlMessage));
+              } else {
+                console.log("Number of records changed: " + result.affectedRows + " in song");
+                // If any listener likes a song, insert this listener and song into liked_songs.
+                const likedSong = {
+                  song_id: id,
+                  username: req.user.user,
+                }
+                const liked_query = `INSERT INTO liked_song VALUES (?)`;
+                db.query(liked_query,[Object.values(likedSong)],(err,result) => {
+                  if (err) {
+                    res.status(422);
+                    next(new Error(err.sqlMessage));
+                  } else {
+                    console.log("Number of records changed: " + result.affectedRows + " in liked_song");
+                    res.send({result});
+                  }
+                });
+              }
+            });
+        } else {
           res.status(422);
-          next(new Error('Database Error'));
-        } else {
-          console.log("Number of records changed: " + result.affectedRows);
-          res.send({result});
+          next(new Error('You already liked this song.'));
         }
-      });
+      }
+    });
+    // If any listener likes a song, insert this listener and song into liked_songs.
   } catch (error) {
     next(error);
   }
-}
+};
 
+
+// get popular song of artist.
+
+const popularSongOfArtist = (req, res, next) => {
+  const { artist_name: name } = req.params;
+  try {
+    const query = `SELECT * FROM song WHERE artist_name='${name}' ORDER BY number_of_likes DESC`;
+    db.query(query, (err, result) => {
+      if (err) {
+        res.status(422);
+        next(new Error(err.sqlMessage));
+      } else {
+        res.send({result});
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// get songs of a specific genre.
+const songsOfGenre = (req, res, next) => {
+  const { genre : genre }  = req.params;
+  try {
+    const query = `SELECT song.* FROM song JOIN album ON song.album_id = album.album_id AND album.genre = '${genre}';`;
+    db.query(query,(err,result) => {
+      if (err) {
+        res.status(422);
+        next(new Error(err.sqlMessage));
+      } else {
+        res.send({result});
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const searchSong = (req, res, next) => {
+  const { keyword: keyword } = req.params;
+  console.log(req.params);
+  try {
+    const query = `SELECT * FROM song  WHERE title LIKE '%${keyword}%';`;
+    db.query(query,(err,result) => {
+      if (err) {
+        res.status(422);
+        next(new Error(err.sqlMessage));
+      } else {
+        res.send({result});
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 module.exports = {
   allSongs,
@@ -175,5 +260,8 @@ module.exports = {
   addSong,
   updateSong,
   deleteSong,
-  likeSong
+  likeSong,
+  popularSongOfArtist,
+  songsOfGenre,
+  searchSong
 }

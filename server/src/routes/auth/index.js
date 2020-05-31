@@ -14,14 +14,14 @@ const router = express.Router();
 const config = require('../../config');
 
 const listenerSchema = Joi.object().keys({
-  username: Joi.string().regex(/(^[a-zA-Z0-9_]+$)/).min(2).max(67).required(),
+  username: Joi.string().regex(/(^[a-zA-Z0-9_]+$)/).min(2).max(255).required(),
   email: Joi.string().regex(/(^\S+@\S+$)/).required(),
   password: Joi.string().trim().min(8).required()
 });
 
 const artistSchema = Joi.object().keys({
-  name: Joi.string().regex(/(^[a-zA-Z]+$)/).min(2).max(67).required(),
-  surname: Joi.string().regex(/(^[a-zA-Z]+$)/).min(2).max(67).required(),
+  name: Joi.string().regex(/(^[a-zA-Z]+$)/).min(2).max(255).required(),
+  surname: Joi.string().regex(/(^[a-zA-Z]+$)/).min(2).max(255).required(),
   password: Joi.string().trim().min(8).required()
 });
 
@@ -62,7 +62,6 @@ const createTokenSendResponse =  (user,res,next) => {
     }else {
       // localStorage.token = token;
       res.send({token});
-      
     }
   }); 
   
@@ -78,7 +77,7 @@ router.post('/listener/signup',(req, res, next) => {
       bcrypt.hash(password.trim(),12).then(hashPassword => {
         db.query(query,[[username,email,hashPassword]], (err,result,fields) => {
           if (err) {
-            const error = new Errors.Conflict('That username or email is avaiable!!');
+            const error = new Errors.Conflict('That username or email is available!!');
             res.status(HttpStatus.CONFLICT);
             next(error);
           } else {
@@ -102,7 +101,7 @@ function respondError422(res, next) {
   next(error);
 }
 
-router.get('/listener/login', (req,res,next) => {
+router.post('/listener/login', (req,res,next) => {
   const result = Joi.validate(req.body,listenerSchema);
   if (result.error === null) {
     const {username,email,password} = req.body;
@@ -166,7 +165,7 @@ router.post('/artist/signup',(req, res, next) => {
   }
 });
 
-router.get('/artist/login', (req,res,next) => {
+router.post('/artist/login', (req,res,next) => {
   const result = Joi.validate(req.body,artistSchema);
   if (result.error === null) {
     const {name,surname,password} = req.body;

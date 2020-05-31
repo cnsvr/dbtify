@@ -4,7 +4,7 @@
   "description": "This is a database project.",
   "main": "src/index.js",
   "scripts": {
-    "start": "node run src/index.js",
+    "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "create:db": "node src/routes/db/createDB.js"
   },

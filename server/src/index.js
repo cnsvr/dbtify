@@ -10,11 +10,12 @@ const auth = require('./routes/auth/index');
 const albums = require('./routes/api/albums');
 const songs = require('./routes/api/songs');
 const artists = require('./routes/api/artists');
+const liked_songs = require('./routes/api/liked_songs');
 const db = require('./routes/db/connection');
 
 //Middleware
 app.use(cors({
-  origin: '*'
+  origin: 'http://localhost:8080'
 }));
 app.use(volleyball);
 app.use(express.json());
@@ -24,6 +25,7 @@ app.use('/auth', auth);
 app.use('/api/v1/albums',albums);
 app.use('/api/v1/songs',songs);
 app.use('/api/v1/artists',artists);
+app.use('/api/v1/liked_songs',liked_songs);
 
 // Connect to Database
 
