@@ -15,7 +15,7 @@ const db = require('./routes/db/connection');
 
 //Middleware
 app.use(cors({
-  origin: '*'
+  origin: 'http://localhost:8080'
 }));
 app.use(volleyball);
 app.use(express.json());

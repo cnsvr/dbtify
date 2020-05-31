@@ -133,7 +133,7 @@ const deleteSong = (req, res, next) => {
         if (err) {
           // console.log(err);
           res.status(422);
-          next(new Error('Database Error'));
+          next(new Error(err.sqlMessage));
         } else {
           console.log("Number of records deleted: " + result.affectedRows);
           res.send({result});
@@ -187,7 +187,7 @@ const likeSong = (req, res, next) => {
             });
         } else {
           res.status(422);
-          next(new Error('You can\'t like same song more than once.'));
+          next(new Error('You already liked this song.'));
         }
       }
     });

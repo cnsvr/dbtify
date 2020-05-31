@@ -21,7 +21,7 @@ router.patch('/:album_id',controllers.likeAlbum);
 
 // delete album of artist
 
-router.delete('/artist_name/:id',controllers.deleteAlbum);
+router.delete('/:artist_name/:id',controllers.deleteAlbum);
 
 
 
