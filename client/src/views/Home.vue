@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Navigation form="login"></Navigation>
+    <Navigation form="login" user=""></Navigation>
     <div class="container text-center pt-5">
       <div class="jumbotron">
         <h1 class="display-3">Welcome the DBtify</h1>

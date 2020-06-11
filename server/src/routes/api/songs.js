@@ -28,6 +28,10 @@ router.get('/search/:keyword',controllers.searchSong);
 // add song into album of artist.
 router.post('/:artist_name/:album_id',controllers.addSong);
 
+// dislike song
+
+router.patch('/dislike/:song_id',controllers.disLike);
+
 // update song title of album of artist.
 
 router.patch('/:artist_name/:song_id',controllers.updateSong);
@@ -35,6 +39,8 @@ router.patch('/:artist_name/:song_id',controllers.updateSong);
 // like song
 
 router.patch('/:song_id',controllers.likeSong);
+
+
 
 // delete song of artist
 

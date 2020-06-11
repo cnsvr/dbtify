@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Navigation form="signup"></Navigation>
+    <Navigation form="signup" user=""></Navigation>
     <div class="container pt-5">
       <h1 class="text-center">Login</h1>
       <div v-if="errorMessage" class="alert alert-danger" role="alert">

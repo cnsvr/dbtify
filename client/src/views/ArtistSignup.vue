@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Navigation form="login"></Navigation>
+    <Navigation form="login" user=""></Navigation>
     <div class="container pt-5">
       <h1 class="text-center">Sign Up</h1>
       <div v-if="errorMessage" class="alert alert-danger" role="alert">
@@ -68,6 +68,7 @@ const artistSchema = Joi.object().keys({
   surname: Joi.string().regex(/(^[a-zA-Z]+$)/).min(2).max(255)
     .required(),
   password: Joi.string().trim().min(8).required(),
+  confirmPassword: Joi.string().trim().min(8).required(),
 });
 
 
@@ -138,6 +139,7 @@ export default {
       } else if (result.error.message.includes('surname')) {
         this.errorMessage = 'Email is invalid';
       } else {
+        console.log(result.error.message);
         this.errorMessage = 'Password is invalid';
       }
       return false;

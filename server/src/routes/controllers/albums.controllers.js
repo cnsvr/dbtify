@@ -2,6 +2,7 @@ const Joi = require('joi');
 const db = require('../db/connection');
 
 const albumSchema = Joi.object().keys({
+  album_id: Joi.number().min(1).required(),
   title: Joi.string().min(1).max(255).required(),
   genre:Joi.string().min(1).max(255).required(),
 });
@@ -18,11 +19,11 @@ const addAlbum = (req, res, next) => {
       artist_name: name,
     }
     if (result.error === null) {
-      const query = `INSERT INTO album (genre,title,artist_name) VALUES (?)`;
+      const query = `INSERT INTO album (album_id,genre,title,artist_name) VALUES (?)`;
       db.query(query,[Object.values(album)],(err,result) => {
         if (err) {
           res.status(422);
-          next(new Error('Database Error'));
+          next(new Error(err.sqlMessage));
         } else {
           res.json({result});
         }

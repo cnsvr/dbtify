@@ -16,7 +16,6 @@ router.get('/:artist_name',controllers.artistAlbum);
 router.patch('/:artist_name/:id',controllers.updateOne);
 
 //  like album
-
 router.patch('/:album_id',controllers.likeAlbum);
 
 // delete album of artist
