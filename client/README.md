@@ -15,10 +15,13 @@
  * -[ ] Unlike album
  * -[x] Liked song once.
  * -[x] Dislike song. at server if all song are disliked, album also disliked ????
- - [ ] Artist Dashboard
+ - [x] Artist Dashboard
   * -[x] Add album form and a song
-  * -[ ] Edit album
+  * -[x] Edit album
   * -[x] Delete album
   * -[x] Show albums
-  * -[x] Show songs of albums
+  * -[x] Show songs of albums Done!!
+  * -[x] Add song
+  * -[x] Edit song
+  * -[x] Delete Song
 

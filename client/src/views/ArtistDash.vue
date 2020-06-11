@@ -101,43 +101,45 @@
             Delete Album
           </b-button>
         </template>
-        <div v-if="editAlbumForm">
-          <b-form @submit.prevent="editAlbum()" class="py-3">
-            <div class="form-group">
-              <label for="album_id">Album ID</label>
-              <input
-              v-model="form.album_id"
-              type="text"
-              class="form-control"
-              id="album_id"
-              aria-describedby="albumidHelp"
-              placeholder="Enter your album ID" required>
-              <small id="albumidHelp"
-              class="form-text text-muted">You must enter unique album ID.</small>
-            </div>
-            <div class="form-row">
-              <div class="form-group col-md-6">
-                <label for="album_title">Album Title</label>
+        <template v-slot:item.album_actions>
+          <div v-if="editAlbumForm">
+            <b-form @submit.prevent="editAlbum()" class="py-3">
+              <div class="form-group">
+                <label for="album_id">Album ID</label>
                 <input
-                v-model="form.album_title"
+                v-model="form.album_id"
                 type="text"
                 class="form-control"
-                id="album_title" aria-describedby="albumTitleHelp"
-                placeholder="Enter title of your album" required>
+                id="album_id"
+                aria-describedby="albumidHelp"
+                placeholder="Enter your album ID" required>
+                <small id="albumidHelp"
+                class="form-text text-muted">You must enter unique album ID.</small>
               </div>
-              <div class="form-group col-md-6">
-                <label for="album_genre">Album Genre</label>
-                <input
-                v-model="form.album_genre"
-                type="text"
-                class="form-control"
-                id="album_genre" aria-describedby="albumGenreHelp"
-                placeholder="Enter genre of your album" required>
+              <div class="form-row">
+                <div class="form-group col-md-6">
+                  <label for="album_title">Album Title</label>
+                  <input
+                  v-model="form.album_title"
+                  type="text"
+                  class="form-control"
+                  id="album_title" aria-describedby="albumTitleHelp"
+                  placeholder="Enter title of your album" required>
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="album_genre">Album Genre</label>
+                  <input
+                  v-model="form.album_genre"
+                  type="text"
+                  class="form-control"
+                  id="album_genre" aria-describedby="albumGenreHelp"
+                  placeholder="Enter genre of your album" required>
+                </div>
               </div>
-            </div>
-            <button type="submit" class="btn btn-primary">Edit Album</button>
-          </b-form>
-        </div>
+              <button type="submit" class="btn btn-primary">Edit Album</button>
+            </b-form>
+          </div>
+        </template>
       </b-table>
     </div>
   </div>

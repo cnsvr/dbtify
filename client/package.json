@@ -9,6 +9,7 @@
     "fix": "vue-cli-service lint --fix"
   },
   "dependencies": {
+    "@mdi/font": "^5.3.45",
     "bootstrap": "^4.5.0",
     "bootstrap-vue": "^2.15.0",
     "bootswatch": "^4.5.0",
@@ -47,8 +48,7 @@
       "no-else-return": 0,
       "no-plusplus": 0,
       "no-unused-expressions": 0,
-      "no-restricted-globals":0
-
+      "no-restricted-globals": 0
     }
   },
   "browserslist": [
