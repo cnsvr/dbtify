@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Navigation v-bind:form="user.user"></Navigation>
+    <Navigation v-bind:form="user.user" v-bind:user="user"></Navigation>
     <h1 class="text-center pt-5">Artists</h1>
     <div class= "pt-4">
       <b-table :items="items" :fields="fields" striped responsive="sm"
@@ -18,10 +18,12 @@
       </b-table>
       <!-- Info modal -->
       <b-modal :id="albumModal.id" :title="albumModal.title" ok-only @hide="resetAlbumModal">
-        <b-table :items="albumModal.content" :fields="albumModal.fields"></b-table>
+        <b-table :items="albumModal.content" :fields="albumModal.fields"
+        class="text-center"></b-table>
       </b-modal>
       <b-modal :id="songModal.id" :title="songModal.title" ok-only @hide="resetSongModal">
-        <b-table :items="songModal.content" :fields="songModal.fields"></b-table>
+        <b-table :items="songModal.content" :fields="songModal.fields"
+        class="text-center"></b-table>
       </b-modal>
     </div>
   </div>
@@ -39,7 +41,10 @@ export default {
     Navigation,
   },
   data: () => ({
-    user: null,
+    user: {
+      user: '',
+      role: '',
+    },
     items: [],
     fields: [
       { key: 'artist_name', label: 'NAME' },
@@ -51,7 +56,7 @@ export default {
       title: '',
       content: [],
       fields: [
-        { key: 'album_id', label: 'ID' },
+        { key: 'album_id', label: 'ALBUM ID' },
         { key: 'title', label: 'TITLE' },
         { key: 'genre', label: 'GENRE' },
         { key: 'number_of_likes', label: 'LIKES' },
@@ -64,7 +69,7 @@ export default {
       fields: [
         { key: 'song_id', label: 'ID' },
         { key: 'title', label: 'TITLE' },
-        { key: 'album_id', label: 'ALBUM' },
+        { key: 'album_id', label: 'ALBUM ID' },
         { key: 'number_of_likes', label: 'LIKES' },
       ],
     },
@@ -93,7 +98,7 @@ export default {
   },
   methods: {
     infoAlbums(artistName, button) {
-      this.albumModal.title = artistName.toUpperCase();
+      this.albumModal.title = `ALBUMS OF ${artistName.toUpperCase()}`;
       this.getAlbumOfArtist(artistName);
       this.$root.$emit('bv::show::modal', this.albumModal.id, button);
     },
@@ -102,7 +107,7 @@ export default {
       this.albumModal.content = '';
     },
     infoSongs(artistName, button) {
-      this.songModal.title = artistName.toUpperCase();
+      this.songModal.title = `SONGS OF ${artistName.toUpperCase()}`;
       this.getSongsOfArtist(artistName);
       this.$root.$emit('bv::show::modal', this.songModal.id, button);
     },

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Navigation v-bind:form="user.user"></Navigation>
+    <Navigation v-bind:form="user.user" v-bind:user="user"></Navigation>
     <h1 class="text-center pt-5">Dashboard</h1>
     <h1 v-if="user" class="pl-3">Hello, there 👋</h1>
   </div>
@@ -17,7 +17,10 @@ export default {
     Navigation,
   },
   data: () => ({
-    user: null,
+    user: {
+      user: '',
+      role: '',
+    },
   }),
   mounted() {
     fetch(API_URL, {

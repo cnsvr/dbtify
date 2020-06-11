@@ -13,16 +13,22 @@
       <div class="collapse navbar-collapse" id="navbarColor01">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            <router-link class="nav-link" :to="{ name:'dashboard'}">Dashboard</router-link>
+            <router-link v-if="user.role === 'listener'"
+              class="nav-link" :to="{ name:'dashboard'}">Dashboard</router-link>
+            <router-link v-else
+              class="nav-link" :to="{ name:'artistDashboard'}">Dashboard</router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link" :to="{ name:'Artists'}">Artists</router-link>
+            <router-link v-if="user.role === 'listener'"
+              class="nav-link" :to="{ name:'Artists'}">Artists</router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link" :to="{ name:'Albums'}">Albums</router-link>
+            <router-link v-if="user.role === 'listener'"
+              class="nav-link" :to="{ name:'Albums'}">Albums</router-link>
           </li>
           <li class="nav-item">
-            <router-link class="nav-link" :to="{ name:'Songs'}">Songs</router-link>
+            <router-link v-if="user.role === 'listener'"
+              class="nav-link" :to="{ name:'Songs'}">Songs</router-link>
           </li>
         </ul>
         <form v-if="form=='login'" class="form-inline my-2 my-lg-0">

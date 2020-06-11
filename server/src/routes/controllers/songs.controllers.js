@@ -2,6 +2,7 @@ const Joi = require('joi');
 const db = require('../db/connection');
 
 const songSchema = Joi.object().keys({
+  song_id: Joi.number().min(1).required(),
   title: Joi.string().min(1).max(255).required(),
 });
 
@@ -69,12 +70,12 @@ const addSong = (req, res, next) => {
           album_id: id,
           artist_name: name,
         };
-        const query = `INSERT INTO song (title,album_id,artist_name) VALUES (?)`;
+        const query = `INSERT INTO song (song_id,title,album_id,artist_name) VALUES (?)`;
         db.query(query,[Object.values(song)],(err,result) => {
           if (err) {
             console.log(err);
             res.status(422);
-            next(new Error('Database Error'));
+            next(new Error(err.sqlMessage));
           } else {
             res.send({result});
           }
@@ -197,6 +198,57 @@ const likeSong = (req, res, next) => {
   }
 };
 
+const disLike = (req, res, next) => {
+  const { song_id : id } = req.params;
+  try {
+    // If listener liked a song , he/she dislike song.
+    const checkLikedList = `SELECT * FROM liked_song WHERE song_id=${id} AND username='${req.user.user}'`;
+    db.query(checkLikedList,(err,result) => {
+      if (err) {
+        // console.log(err);
+        res.status(422);
+        next(new Error(err.sqlMessage));
+      } else {
+        if (result.length != 0) {
+          const query = `UPDATE song SET number_of_likes = number_of_likes - 1 WHERE song_id =${id}`;
+          db.query(query,(err,result) => {
+            if (err) {
+                // console.log(err);
+                res.status(422);
+                next(new Error(err.sqlMessage));
+              } else {
+                console.log("Number of records changed: " + result.affectedRows + " in song");
+                // If any listener likes a song, insert this listener and song into liked_songs.
+                const liked_query = `DELETE FROM liked_song WHERE song_id=${id} AND username='${req.user.user}'`;
+                db.query(liked_query,(err,result) => {
+                  if (err) {
+                    res.status(422);
+                    next(new Error(err.sqlMessage));
+                  } else {
+                    console.log("Number of records changed: " + result.affectedRows + " in liked_song");
+                    res.send({result});
+                  }
+                });
+              }
+            });
+        } else {
+          res.status(422);
+          next(new Error('You haven\'t liked this song yet.'));
+        }
+      }
+    });
+    //  After dislike, if user disliked all songs albums , albums also dislike if liked it before.
+    const getRestLikeSongofAlbum = `SELECT * FROM dbtify.liked_song WHERE username='${req.user.user}' and song_id 
+                                    in(SELECT song_id FROM dbtify.song WHERE album_id 
+                                    in (SELECT album_id FROM dbtify.song WHERE song_id = ${id}));`;
+    
+    
+
+  } catch (error) {
+    next(error);
+  }
+};
+
 
 // get popular song of artist.
 
@@ -237,7 +289,7 @@ const songsOfGenre = (req, res, next) => {
 
 const searchSong = (req, res, next) => {
   const { keyword: keyword } = req.params;
-  console.log(req.params);
+  // console.log(req.params);
   try {
     const query = `SELECT * FROM song  WHERE title LIKE '%${keyword}%';`;
     db.query(query,(err,result) => {
@@ -260,6 +312,7 @@ module.exports = {
   addSong,
   updateSong,
   deleteSong,
+  disLike,
   likeSong,
   popularSongOfArtist,
   songsOfGenre,
