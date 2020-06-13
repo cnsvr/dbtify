@@ -20,8 +20,8 @@ const listenerSchema = Joi.object().keys({
 });
 
 const artistSchema = Joi.object().keys({
-  name: Joi.string().regex(/(^[a-zA-Z]+$)/).min(2).max(255).required(),
-  surname: Joi.string().regex(/(^[a-zA-Z]+$)/).min(2).max(255).required(),
+  name: Joi.string().regex(/(^[a-zA-Z.]+$)/).min(2).max(255).required(),
+  surname: Joi.string().regex(/(^[a-zA-Z.]+$)/).min(2).max(255).required(),
   password: Joi.string().trim().min(8).required()
 });
 

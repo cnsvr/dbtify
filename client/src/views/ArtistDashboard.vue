@@ -54,6 +54,18 @@
                         <v-text-field v-model="editedItem.song_title"
                         label="Song Title"></v-text-field>
                       </v-col>
+                      <v-col v-if="editedIndex == -1" cols="12" sm="12" md="6">
+                        <v-select
+                          v-model="editedItem.contributers"
+                          :items="contributers"
+                          return-object
+                          label="Contributors of Song"
+                          multiple
+                          chips
+                          hint="Please choose contributors if exists"
+                          persistent-hint
+                          ></v-select>
+                      </v-col>
                     </v-row>
                   </v-container>
                 </v-card-text>
@@ -102,6 +114,18 @@
                             <v-col cols="12" sm="6" md="4">
                               <v-text-field v-model="editedSong.title" label="Title"></v-text-field>
                             </v-col>
+                            <v-col cols="12" sm="12" md="6">
+                              <v-select
+                                v-model="editedSong.contributers"
+                                :items="contributers"
+                                label="Contributors of Song"
+                                multiple
+                                chips
+                                return-object
+                                hint="Please choose contributors if exists"
+                                persistent-hint
+                                ></v-select>
+                            </v-col>
                           </v-row>
                         </v-container>
                       </v-card-text>
@@ -145,6 +169,7 @@
 import Navigation from './Navigation.vue';
 
 const API_URL = 'http://localhost:5000/';
+const ARTIST_URL = 'http://localhost:5000/api/v1/artists';
 const ALBUM_URL = 'http://localhost:5000/api/v1/albums';
 const SONG_URL = 'http://localhost:5000/api/v1/songs';
 
@@ -161,6 +186,8 @@ export default {
     },
     songDialog: false,
     dialog: false,
+    contributers: [],
+    selectedContributers: [],
     headers: [
       {
         text: 'Album ID',
@@ -207,6 +234,7 @@ export default {
       genre: '',
       song_id: '',
       song_title: '',
+      contributers: [],
     },
     defaultItem: {
       album_id: '',
@@ -214,15 +242,18 @@ export default {
       genre: '',
       song_id: '',
       song_title: '',
+      contributers: [],
     },
     editedSongIndex: -1,
     editedSong: {
       song_id: '',
       title: '',
+      contributers: [],
     },
     defaultSong: {
       song_id: '',
       title: '',
+      contributers: [],
     },
   }),
   computed: {
@@ -254,6 +285,22 @@ export default {
           this.user = result.user;
           console.log(this.user);
           this.getAlbums();
+        }
+      });
+    fetch(ARTIST_URL, {
+      headers: {
+        authorization: `Bearer ${localStorage.token}`,
+      },
+    }).then((res) => res.json())
+      .then((artistResult) => {
+        if (artistResult.result) {
+          // console.log(artistResult);
+          artistResult.result.forEach((result) => {
+            if (result.artist_name !== this.user.user) {
+              this.contributers.push(`${result.artist_name[0].toUpperCase()}${result.artist_name.slice(1)} ${result.artist_surname[0].toUpperCase()}${result.artist_surname.slice(1)}`);
+            }
+          });
+          // console.log(this.artists);
         }
       });
   },
@@ -289,6 +336,13 @@ export default {
     editSong(item) {
       this.currentLike = item.number_of_likes;
       this.editedSongIndex = item.song_id;
+      /*
+      this.editedSong = {
+        song_id: item.song_id,
+        title: item.title,
+        contributers: item.contributers.split(','),
+      };
+      */
       this.editedSong = { ...item };
       this.songDialog = true;
     },
@@ -378,7 +432,7 @@ export default {
       }
     },
     deleteItem(item) {
-      if (confirm('Are you sure you want to delete this item?')) {
+      if (confirm('Are you sure you want to delete this album?')) {
         fetch(`${ALBUM_URL}/${this.user.user}/${item.album_id}`, {
           method: 'DELETE',
           headers: {
@@ -415,10 +469,11 @@ export default {
     saveSong() {
       if (this.editedSongIndex === -1) {
         // add new song
-        console.log(this.editedItem);
+        // console.log(this.editedItem);
         const songBody = {
           song_id: this.editedSong.song_id,
           title: this.editedSong.title,
+          contributers: this.editedSong.contributers,
         };
         fetch(`${SONG_URL}/${this.user.user}/${this.editedItem.album_id}`, {
           method: 'POST',
@@ -448,6 +503,7 @@ export default {
         const songBody = {
           song_id: this.editedSong.song_id,
           title: this.editedSong.title,
+          contributers: this.editedSong.contributers,
         };
         fetch(`${SONG_URL}/${this.user.user}/${this.editedSong.song_id}`, {
           method: 'PATCH',
@@ -518,6 +574,7 @@ export default {
             const songBody = {
               song_id: this.editedItem.song_id,
               title: this.editedItem.song_title,
+              contributers: this.editedItem.contributers,
             };
             fetch(`${SONG_URL}/${this.user.user}/${this.editedItem.album_id}`, {
               method: 'POST',

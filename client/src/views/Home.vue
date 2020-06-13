@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Navigation form="login" user=""></Navigation>
+    <Navigation form="login" v-bind:user="user"></Navigation>
     <div class="container text-center pt-5">
       <div class="jumbotron">
         <h1 class="display-3">Welcome the DBtify</h1>
@@ -22,9 +22,30 @@
 <script>
 import Navigation from './Navigation.vue';
 
+const API_URL = 'http://localhost:5000/';
 
 export default {
   name: 'Home',
+  data: () => ({
+    user: {
+      user: '',
+      role: '',
+    },
+  }),
+  mounted() {
+    fetch(API_URL, {
+      headers: {
+        authorization: `Bearer ${localStorage.token}`,
+      },
+    }).then((res) => res.json())
+      .then((result) => {
+        if (result.user) {
+          // console.log(result.user);
+          this.user = result.user;
+        }
+      });
+    console.log(this.user);
+  },
   components: {
     Navigation,
   },

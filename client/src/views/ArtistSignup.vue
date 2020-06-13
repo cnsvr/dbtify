@@ -63,9 +63,9 @@ import Navigation from './Navigation.vue';
 const SIGN_UP_URL = 'http://localhost:5000/auth/artist/signup';
 
 const artistSchema = Joi.object().keys({
-  name: Joi.string().regex(/(^[a-zA-Z]+$)/).min(2).max(255)
+  name: Joi.string().regex(/(^[a-zA-Z.]+$)/).min(2).max(255)
     .required(),
-  surname: Joi.string().regex(/(^[a-zA-Z]+$)/).min(2).max(255)
+  surname: Joi.string().regex(/(^[a-zA-Z.]+$)/).min(2).max(255)
     .required(),
   password: Joi.string().trim().min(8).required(),
   confirmPassword: Joi.string().trim().min(8).required(),

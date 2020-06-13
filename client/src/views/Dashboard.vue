@@ -12,9 +12,12 @@
           @click="loader = 'loading'; getmyLikedSong(); myLikeTable= !myLikeTable;">
           My Liked Song</v-btn>
         <v-btn rounded color="primary" :loading="loading2"
-          :disabled="loading2" dark
+          :disabled="loading2" dark class="mr-3"
           @click="loader = 'loading2'; getListeners(); listenerTable=!listenerTable;">
           Other Listeners</v-btn>
+        <v-btn rounded color="primary" @click="getPopularArtists();popularArtists=!popularArtists;">
+          GET POPULAR ARTISTS
+        </v-btn>
       </div>
       <template>
         <div class="ma-3 pa-3" >
@@ -35,8 +38,8 @@
             </v-col>
             <v-col cols="12" sm="6" md="4">
               <v-btn rounded
-                @click="getPopularArtists(); popularArtists=!popularArtists;"
-                color="primary">GET POPULAR ARTIST</v-btn>
+                @click="getContributorsArtist();"
+                color="primary">GET CONTRIBUTERS</v-btn>
             </v-col>
           </v-row>
           <v-row align="start">
@@ -75,8 +78,22 @@
           </v-row>
         </div>
       </template>
-      <div class="ma-3 pa-3">
-        <v-data-table v-if="titleSongsTable"
+      <div v-if="contributersTable" class="ma-3 pa-3">
+        <v-data-table
+          :items="contributers" :headers="contributersHeaders"
+            no-data-text="No contributers found.">
+          <template v-slot:top>
+            <v-toolbar flat color="#5C6BC0">
+              <v-toolbar-title>Contributers of {{selectedItems}}</v-toolbar-title>
+              <v-spacer></v-spacer>
+              <v-btn rounded color="primary"
+              @click="contributersTable=!contributersTable">Close Tab</v-btn>
+            </v-toolbar>
+          </template>
+        </v-data-table>
+      </div>
+      <div v-if="titleSongsTable" class="ma-3 pa-3">
+        <v-data-table
           :items="titleSongs" :headers="titleSongsHeaders"
             no-data-text="No songs found.">
           <template v-slot:top>
@@ -89,8 +106,8 @@
           </template>
         </v-data-table>
       </div>
-      <div class="ma-3 pa-3">
-        <v-data-table v-if="genreSongsTable"
+      <div v-if="genreSongsTable" class="ma-3 pa-3">
+        <v-data-table
           :items="genreSongs" :headers="genreSongsHeaders"
             no-data-text="No songs found.">
           <template v-slot:top>
@@ -103,8 +120,8 @@
           </template>
         </v-data-table>
       </div>
-      <div class="ma-3 pa-3">
-        <v-data-table v-if="popularArtists"
+      <div v-if="popularArtists" class="ma-3 pa-3">
+        <v-data-table
           :items="popularArtistsList" :headers="popularArtistsHeaders"
             no-data-text="No artists found.">
           <template v-slot:top>
@@ -117,8 +134,8 @@
           </template>
         </v-data-table>
       </div>
-      <div class="ma-3 pa-3">
-        <v-data-table v-if="artistPopular"
+      <div v-if="artistPopular" class="ma-3 pa-3">
+        <v-data-table
           :items="artistPopularSongs" :headers="artistPopularSongsHeaders"
             no-data-text="No songs found.">
           <template v-slot:top>
@@ -130,8 +147,8 @@
           </template>
         </v-data-table>
       </div>
-      <div class="ma-3 pa-3">
-        <v-data-table v-if="myLikeTable" :items="myLikedSong" :headers="myLikedSongHeaders">
+      <div v-if="myLikeTable" class="ma-3 pa-3">
+        <v-data-table :items="myLikedSong" :headers="myLikedSongHeaders">
           <template v-slot:top>
             <v-toolbar flat color="#5C6BC0">
               <v-toolbar-title>My Liked Songs</v-toolbar-title>
@@ -141,8 +158,8 @@
           </template>
         </v-data-table>
       </div>
-      <div class="ma-3 pa-3">
-        <v-data-table v-if="listenerTable" :items="listeners" :headers="listenersHeaders"
+      <div v-if="listenerTable" class="ma-3 pa-3">
+        <v-data-table  :items="listeners" :headers="listenersHeaders"
           class="elevation-1" item-key="username"
           @item-expanded="showListenerLikedSong" :single-expand=true
           show-expand
@@ -203,6 +220,7 @@ export default {
     popularArtists: false,
     genreSongsTable: false,
     titleSongsTable: false,
+    contributersTable: false,
     songGenre: '',
     songTitle: '',
     errorMessage: '',
@@ -236,7 +254,7 @@ export default {
         text: 'Album ID', align: 'center', value: 'album_id', sortable: false,
       },
       {
-        text: 'Producer', align: 'center', value: 'artist_name', sortable: false,
+        text: 'Artist', align: 'center', value: 'artist_name', sortable: false,
       },
       { text: 'Likes', align: 'center', value: 'number_of_likes' },
     ],
@@ -255,7 +273,7 @@ export default {
         text: 'Album ID', align: 'center', value: 'album_id', sortable: false,
       },
       {
-        text: 'Producer', align: 'center', value: 'artist_name', sortable: false,
+        text: 'Artist', align: 'center', value: 'artist_name', sortable: false,
       },
       { text: 'Likes', align: 'center', value: 'number_of_likes' },
     ],
@@ -306,6 +324,9 @@ export default {
         text: 'Album ID', align: 'center', value: 'album_id', sortable: false,
       },
       {
+        text: 'Artist', align: 'center', value: 'artist_name', sortable: false,
+      },
+      {
         text: 'Likes', align: 'center', value: 'number_of_likes', sortable: false,
       },
     ],
@@ -324,7 +345,25 @@ export default {
         text: 'Album ID', align: 'center', value: 'album_id', sortable: false,
       },
       {
+        text: 'Artist', align: 'center', value: 'artist_name', sortable: false,
+      },
+      {
         text: 'Likes', align: 'center', value: 'number_of_likes', sortable: false,
+      },
+    ],
+    contributers: [],
+    contributersHeaders: [
+      {
+        text: 'Song ID',
+        align: 'center',
+        sortable: false,
+        value: 'song_id',
+      },
+      {
+        text: 'Title', align: 'center', value: 'title', sortable: false,
+      },
+      {
+        text: 'Contributers', align: 'center', value: 'contributers', sortable: false,
       },
     ],
   }),
@@ -350,7 +389,7 @@ export default {
         if (artistResult.result) {
           // console.log(artistResult);
           artistResult.result.forEach((result) => {
-            this.artists.push(result.artist_name);
+            this.artists.push(`${result.artist_name} ${result.artist_surname}`);
           });
           // console.log(this.artists);
         }
@@ -407,7 +446,7 @@ export default {
         });
     },
     getArtistPopularSongs() {
-      fetch(`${SONG_URL}/${this.selectedItems}/popular`, {
+      fetch(`${SONG_URL}/${this.selectedItems.split(' ')[0]}/popular`, {
         method: 'GET',
         headers: {
           authorization: `Bearer ${localStorage.token}`,
@@ -460,7 +499,6 @@ export default {
           },
         }).then((res) => res.json())
           .then((result) => {
-          // console.log(result.result);
             this.titleSongs = result.result;
             this.titleSongsTable = !this.titleSongsTable;
           });
@@ -471,6 +509,19 @@ export default {
           this.errorMessage = '';
         }, 2000);
       }
+    },
+    getContributorsArtist() {
+      fetch(`${ARTIST_URL}/${this.selectedItems.split(' ')[0]}/${this.selectedItems.split(' ')[1]}`, {
+        method: 'GET',
+        headers: {
+          authorization: `Bearer ${localStorage.token}`,
+        },
+      }).then((res) => res.json())
+        .then((result) => {
+          const co = result.result[0];
+          this.contributers = co;
+          this.contributersTable = !this.contributersTable;
+        });
     },
   },
 };

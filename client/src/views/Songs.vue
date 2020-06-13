@@ -4,7 +4,7 @@
     <h1 class="text-center pt-5">Songs</h1>
     <div class="pt-4">
       <b-table striped hover :items="items" :fields="fields" head-variant="light"
-        class="text-center">
+        class="text-center" no-data-text="No songs found.">
         <template v-slot:cell(likeIt)="row">
           <b-button v-if="!isLikedIt(row.item.song_id)"
             size="sm" @click="likeSong(row.item.song_id)">

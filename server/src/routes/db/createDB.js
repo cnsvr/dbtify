@@ -15,7 +15,7 @@ const queries = [
   "CREATE TABLE listener (username VARCHAR(255) UNIQUE, email VARCHAR(255) UNIQUE,password VARCHAR(255) NOT NULL,PRIMARY KEY (username,email))",
   "CREATE TABLE artist (artist_name VARCHAR(255) UNIQUE, artist_surname VARCHAR(255) UNIQUE, password VARCHAR(255) NOT NULL ,PRIMARY KEY(artist_name,artist_surname))",
   "CREATE TABLE album (album_id INT PRIMARY KEY, title VARCHAR(255) NOT NULL, genre VARCHAR(255) NOT NULL, artist_name VARCHAR(255) , number_of_likes INT DEFAULT 0, FOREIGN KEY (artist_name) REFERENCES artist (artist_name))",
-  "CREATE TABLE song (song_id INT PRIMARY KEY, title VARCHAR(255) NOT NULL, album_id INT, artist_name VARCHAR(255) , number_of_likes INT DEFAULT 0, FOREIGN KEY (artist_name) REFERENCES artist (artist_name),FOREIGN KEY (album_id) REFERENCES album (album_id))",
+  "CREATE TABLE song (song_id INT PRIMARY KEY, title VARCHAR(255) NOT NULL, album_id INT, artist_name VARCHAR(255) , contributers VARCHAR(255) , number_of_likes INT DEFAULT 0, FOREIGN KEY (artist_name) REFERENCES artist (artist_name),FOREIGN KEY (album_id) REFERENCES album (album_id))",
   "CREATE TABLE liked_song (song_id INT, username VARCHAR(255), FOREIGN KEY (song_id) REFERENCES song (song_id), FOREIGN KEY (username) REFERENCES listener (username))",
 ];
 
@@ -25,7 +25,7 @@ const triggers = [
   'create trigger deleteLikedSong before delete on `song` for each row begin delete from `liked_song` where liked_song.song_id = old.song_id; end;',
 ];
 
-const procedure = 'CREATE PROCEDURE `getCoArtist` (IN artistname nvarchar(255), IN artistsurname nvarchar(255)) begin select * from `song` where title in (select title from `song` where artist_name = artistname) and artist_name not in(artistname); end;';
+const procedure = 'CREATE PROCEDURE `getCoArtist` (IN artistname nvarchar(255), IN artistsurname nvarchar(255)) begin select song_id,title,contributers from `song` where artist_name = artistname and contributers <> \'\'; end;';
 
 
 // Initialize Database

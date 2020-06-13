@@ -4,7 +4,7 @@
     <h1 class="text-center pt-5">Albums</h1>
     <div class="pt-4">
       <b-table striped hover :items="items" :fields="fields" head-variant="light"
-      class="text-center">
+      class="text-center" no-data-text="No albums found.">
         <template v-slot:cell(actions)="row">
           <b-button size="sm" @click="infoSongs(row.item.title, row.item.album_id, $event.target)">
             Info Songs

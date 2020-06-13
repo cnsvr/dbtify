@@ -4,6 +4,7 @@ const db = require('../db/connection');
 const songSchema = Joi.object().keys({
   song_id: Joi.number().min(1).required(),
   title: Joi.string().min(1).max(255).required(),
+  contributers: Joi.array().min(0).required(),
 });
 
 // list all songs
@@ -66,11 +67,13 @@ const addSong = (req, res, next) => {
       const result = Joi.validate(req.body,songSchema);
       if ( result.error === null ) {
         const song = {
-          ...req.body,
+          song_id: req.body.song_id,
+          title: req.body.title,
           album_id: id,
           artist_name: name,
+          contributers: req.body.contributers.toString(),
         };
-        const query = `INSERT INTO song (song_id,title,album_id,artist_name) VALUES (?)`;
+        const query = `INSERT INTO song (song_id,title,album_id,artist_name,contributers) VALUES (?)`;
         db.query(query,[Object.values(song)],(err,result) => {
           if (err) {
             console.log(err);
@@ -104,8 +107,8 @@ const updateSong = (req, res, next) => {
     if ( req.user.user === name) {
       const result = Joi.validate(req.body,songSchema);
       if (result.error === null) {
-        const query = `UPDATE song SET title = ? WHERE song_id=${id} AND artist_name='${name}'`;
-        db.query(query,[req.body.title],(err,result) => {
+        const query = `UPDATE song SET title = ? , contributers = ? WHERE song_id=${id} AND artist_name='${name}'`;
+        db.query(query,[req.body.title,req.body.contributers.toString()],(err,result) => {
           if (err) {
             res.status(422);
             next(new Error('Database Error'));

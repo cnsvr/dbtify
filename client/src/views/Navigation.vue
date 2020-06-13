@@ -1,6 +1,11 @@
 <template>
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-      <router-link class="navbar-brand" :to="{ name:'Home'}">DBtify</router-link>
+      <router-link v-if="user.role==='listener'"
+        class="navbar-brand" :to="{ name:'dashboard'}">DBtify</router-link>
+      <router-link v-else-if="user.role==='artist'"
+        class="navbar-brand" :to="{ name:'artistDashboard'}">DBtify</router-link>
+      <router-link v-else class="navbar-brand"
+        :to="{ name:'Home'}">DBtify</router-link>
       <button class="navbar-toggler"
         type="button" data-toggle="collapse"
         data-target="#navbarColor01"
@@ -15,7 +20,7 @@
           <li class="nav-item">
             <router-link v-if="user.role === 'listener'"
               class="nav-link" :to="{ name:'dashboard'}">Dashboard</router-link>
-            <router-link v-else
+            <router-link v-if="user.role === 'artist'"
               class="nav-link" :to="{ name:'artistDashboard'}">Dashboard</router-link>
           </li>
           <li class="nav-item">
@@ -59,6 +64,8 @@
 export default {
   name: 'navbar',
   props: ['form', 'user'],
+  mounted() {
+  },
   methods: {
     logout() {
       localStorage.removeItem('token');
