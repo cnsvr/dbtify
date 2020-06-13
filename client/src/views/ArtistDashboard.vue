@@ -298,7 +298,58 @@ export default {
       this.dialog = true;
     },
     deleteSong(item) {
-      if (confirm('Are you sure you want to delete this item?')) {
+      if (this.songs.length === 1) {
+        if (confirm('Are you sure you want to delete this item? If you delete this song, album also will be deleted.')) {
+          fetch(`${SONG_URL}/${this.user.user}/${item.song_id}`, {
+            method: 'DELETE',
+            headers: {
+              authorization: `Bearer ${localStorage.token}`,
+            },
+          }).then((res) => res.json())
+            .then((result) => {
+              if (result.message) {
+              // this.errorMessage = 'You have to enter unique album ID';
+                this.errorMessage = result.message;
+                // console.log(result.message);
+                setTimeout(() => {
+                  this.errorMessage = '';
+                }, 2000);
+              } else {
+                this.errorMessage = `Song ${item.song_id} is deleted. 😬`;
+                // console.log(result.message);
+                setTimeout(() => {
+                  this.errorMessage = '';
+                }, 2000);
+                this.songs = [];
+                this.closeSong();
+              }
+            }).then(() => {
+              fetch(`${ALBUM_URL}/${this.user.user}/${this.editedItem.album_id}`, {
+                method: 'DELETE',
+                headers: {
+                  authorization: `Bearer ${localStorage.token}`,
+                },
+              }).then((res) => res.json())
+                .then((result) => {
+                  if (result.message) {
+                  // this.errorMessage = 'You have to enter unique album ID';
+                    this.errorMessage = result.message;
+                    // console.log(result.message);
+                    setTimeout(() => {
+                      this.errorMessage = '';
+                    }, 2000);
+                  } else {
+                    this.errorMessage = `Album ${this.editedItem.album_id} is deleted. 😬`;
+                    // console.log(result.message);
+                    setTimeout(() => {
+                      this.errorMessage = '';
+                    }, 2000);
+                    this.close();
+                  }
+                });
+            });
+        }
+      } else if (confirm('Are you sure you want to delete this item?')) {
         fetch(`${SONG_URL}/${this.user.user}/${item.song_id}`, {
           method: 'DELETE',
           headers: {

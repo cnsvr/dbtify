@@ -18,7 +18,7 @@ const allArtist = (req, res, next) => {
 
 const popularArtist = (req, res, next) => {
   try {
-    const query = `SELECT artist_name,sum(number_of_likes) FROM song GROUP BY artist_name ORDER BY sum(number_of_likes) DESC`;
+    const query = `SELECT artist_name,sum(number_of_likes) as number_of_likes FROM song GROUP BY artist_name ORDER BY sum(number_of_likes) DESC`;
     db.query(query,(err,result) => {
       if (err) {
         res.status(422);

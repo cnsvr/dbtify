@@ -5,7 +5,7 @@ const db = require('../db/connection');
 const likedSongsOfListener = (req, res, next) => {
   const { username: name } = req.params;
   try {
-    const query = `SELECT * FROM liked_song WHERE username='${name}'`;
+    const query = `SELECT * FROM song where song_id in (SELECT song_id FROM liked_song WHERE username='${name}')`;
     db.query(query, (err,result) => {
       if (err) {
         // console.log(err);
