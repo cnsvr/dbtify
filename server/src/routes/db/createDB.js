@@ -5,7 +5,7 @@ require('dotenv').config();
 
 const con = mysql.createConnection({
   server: process.env.HOST,
-  user: process.env.USER,
+  user: process.env.DBUSER,
   password: process.env.PASSWORD,
   insecureAuth : true,
   port: process.env.DBPORT,
