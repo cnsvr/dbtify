@@ -8,10 +8,10 @@
         <hr class="my-4">
         <p>It uses MySQL database server and serves many functionalities to you.</p>
         <p class="lead">
-          <router-link class="btn btn-success btn-lg mr-5"
+          <router-link class="btn btn-primary btn-lg mr-5"
           :to="{ name: 'artistSignup' }"
           role="button">Sign up as Artist</router-link>
-          <router-link class="btn btn-success btn-lg"
+          <router-link class="btn btn-primary btn-lg"
             :to="{ name: 'listenerSignup' }"
             role="button">Sign up as Listener</router-link>
         </p>

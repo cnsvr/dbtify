@@ -1,13 +1,14 @@
 const jwt = require('jsonwebtoken');
 const config = require('../../config');
 
+
 function checkTokenSetUser(req, res, next) {
   const authHeader = req.get('Authorization');
   if (authHeader) {
     const token = authHeader.split(' ')[1];
     if (token) {
       // use jwt lib to decode
-      jwt.verify(token, config.token_secret, (error, user) => {
+      jwt.verify(token, process.env.TOKEN_SECRET, (error, user) => {
         if (error) {
           console.log(error);
         }

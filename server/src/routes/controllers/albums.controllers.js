@@ -164,7 +164,7 @@ const likeAlbum = (req, res, next) => {
               ]);
             });
           }
-          console.log(values);
+          // console.log(values);
           const setLikedSongs = `INSERT INTO liked_song (song_id,username) VALUES ?`;
           db.query(setLikedSongs,[values], (err,result) => {
             if (err) {
@@ -183,11 +183,45 @@ const likeAlbum = (req, res, next) => {
   }
 };
 
+const disLike = (req, res, next) => {
+  const { album_id : id } = req.params;
+  try {
+    const query = `UPDATE album SET number_of_likes = number_of_likes - 1 WHERE album_id =${id}`;
+    db.query(query,(err,result) => {
+      if (err) {
+          // console.log(err);
+          res.status(422);
+          next(new Error(err.sqlMessage));
+        } else {
+          console.log("Number of records changed: " + result.affectedRows);
+          // res.send({result});
+        // If user dislike album , all songs of album deleted from liked_song
+
+          // console.log(values);
+          const setdisLikedSongs = `DELETE FROM liked_song WHERE song_id in (SELECT song_id FROM song where album_id = ${id} ) AND username = '${req.user.user}';`;
+          db.query(setdisLikedSongs, (err,result) => {
+            if (err) {
+              // console.log(err);
+              res.status(422);
+              next(new Error(err));
+            } else {
+              res.send({result});
+            }
+          });
+        }
+      });
+    // 
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   addAlbum,
   allAlbums,
   updateOne,
   deleteAlbum,
   artistAlbum,
-  likeAlbum
+  likeAlbum,
+  disLike
 }

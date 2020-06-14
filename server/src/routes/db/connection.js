@@ -1,11 +1,13 @@
 var mysql = require('mysql');
 
+require('dotenv').config();
+
 var connection = mysql.createConnection({
-  host:'127.0.0.1',
-  user: 'root',
-  password: 'root123456',
-  port:3306,
-  database: 'dbtify',
+  host: process.env.HOST,
+  user: process.env.DBUSER,
+  password: process.env.PASSWORD,
+  port: process.env.DBPORT,
+  database: process.env.DATABASE,
 });
 
 module.exports = connection;

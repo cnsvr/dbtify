@@ -52,7 +52,7 @@ const createTokenSendResponse =  (user,res,next) => {
       role: user.role,
     }
   }
-  jwt.sign(payload, config.token_secret, {
+  jwt.sign(payload, process.env.TOKEN_SECRET, {
     expiresIn:'1h',
   },(err, token) => {
     if (err) {

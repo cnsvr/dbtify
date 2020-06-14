@@ -51,9 +51,9 @@ const LOGIN_URL = 'http://localhost:5000/auth/artist/login';
 
 
 const artistSchema = Joi.object().keys({
-  name: Joi.string().regex(/(^[a-zA-Z]+$)/).min(2).max(255)
+  name: Joi.string().regex(/(^[a-zA-Z.]+$)/).min(2).max(255)
     .required(),
-  surname: Joi.string().regex(/(^[a-zA-Z]+$)/).min(2).max(255)
+  surname: Joi.string().regex(/(^[a-zA-Z.]+$)/).min(2).max(255)
     .required(),
   password: Joi.string().trim().min(8).required(),
 });

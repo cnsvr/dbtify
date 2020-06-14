@@ -38,7 +38,10 @@ export default {
     Navigation,
   },
   data: () => ({
-    user: null,
+    user: {
+      user: '',
+      role: '',
+    },
     items: [],
     fields: [
       { key: 'album_id', label: 'ID' },

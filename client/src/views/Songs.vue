@@ -33,7 +33,10 @@ export default {
   },
   data: () => ({
     likedSong: [],
-    user: null,
+    user: {
+      user: '',
+      role: '',
+    },
     items: [],
     fields: [
       { key: 'song_id', label: 'ID' },
