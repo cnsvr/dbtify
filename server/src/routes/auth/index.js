@@ -53,7 +53,7 @@ const createTokenSendResponse =  (user,res,next) => {
     }
   }
   jwt.sign(payload, process.env.TOKEN_SECRET, {
-    expiresIn:'1h',
+    expiresIn:'24h',
   },(err, token) => {
     if (err) {
       console.log(err);

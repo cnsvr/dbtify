@@ -1,6 +1,7 @@
 const express = require('express');
 const volleyball = require('volleyball');
 const cors = require('cors');
+const path = require('path');
 const middlewares = require('./routes/auth/middlewares');
 
 require('dotenv').config();
@@ -29,6 +30,14 @@ app.use('/api/v1/artists',artists);
 app.use('/api/v1/liked_songs',liked_songs);
 app.use('/api/v1/listeners',listeners);
 
+//Static files
+
+/*
+app.use(express.static(path.join(__dirname, '../public')));
+
+*/
+
+
 // Connect to Database
 
 db.connect(err=>{
@@ -47,6 +56,11 @@ app.get('/', (req, res) => {
   });
 })
 
+/*
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public', 'index.html'));
+})
+*/
 
 function notFound(req, res, next) {
   res.status(404);
